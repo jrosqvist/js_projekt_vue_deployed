@@ -36,7 +36,7 @@ app.use("/api/books", books);
 // Hanterar utvecklingen
 if (process.env.NODE_ENV === "production") {
     // Statisk katalog
-    app.use(express.static(__dirname + "/dist/static/"));
+    app.use(express.static(path.join(__dirname, "/dist/static/")));
     // HAntera singe page applikationen
     // .* refererar till alla routes
     app.get(/.*/, (req, res) => {
