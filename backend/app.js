@@ -34,12 +34,8 @@ const books = require("./routes/api/books");
 // Alla routes till books ska gå via bok-filen
 app.use("/api/books", books);
 
-
+// Statisk sökväg
 app.use(express.static(path.join(__dirname, "/dist/")));
-
-
-
-
 
 // Lyssnar för request till port 3000
 app.listen(port, function () {
