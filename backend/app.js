@@ -6,8 +6,11 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 // Sätter upp express-appen
 const app = express();
+// Sökvägar
+const path = require("path");
 // Sätter upp på en port (första för Heroku och andra för localhost)
 const port = process.env.PORT || 3000;
+
 
 // Middleware som hanterar JSON-data
 app.use(bodyParser.json());
@@ -34,16 +37,15 @@ const books = require("./routes/api/books");
 app.use("/api/books", books);
 
 // Hanterar utvecklingen
-if (process.env.NODE_ENV === "production") {
-    // Statisk katalog
-    app.use(express.static(path.join(__dirname, "/dist/static/")));
-    // HAntera singe page applikationen
-    // .* refererar till alla routes
-    app.get(/.*/, (req, res) => {
-        // Skickar till startsidan
-        res.sendFile(__dirname + "/dist/index.html")
-    });
-}
+// Statisk katalog
+app.use(express.static(path.join(__dirname, "/dist/static/")));
+// HAntera singe page applikationen
+// .* refererar till alla routes
+app.get(/.*/, (req, res) => {
+    // Skickar till startsidan
+    res.sendFile(__dirname + "/dist/index.html")
+});
+
 
 // Lyssnar för request till port 3000
 app.listen(port, function () {
