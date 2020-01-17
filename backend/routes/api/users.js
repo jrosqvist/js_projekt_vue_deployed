@@ -29,10 +29,11 @@ users.post("/register", async (req, res) => {
     // Hämtar databas-anslutning
     const users = await loadUsers();
     // Plockar fram användare efter email
-    users.findOne({
-        email: req.body.email
-    })
+    users.findOne(
+        { $or: [{ email: req.body.email }, { username: req.body.username }] }
+    )
         .then(user => {
+            // Ingen finns, lägg till
             if (!user) {
                 // Krypterar lösenordet
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -40,20 +41,23 @@ users.post("/register", async (req, res) => {
                     // Lägger in datat med hashat lösen
                     users.insertOne(userData)
                         .then(user => {
-                            res.json({ status: req.body.username + ' registrerad' })
+                            //res.status.json({ status: req.body.email + ' registrerad ' })
+                            res.status(201).send({ status: req.body.email + ' registrerad '  });
                         })
                         .catch(err => {
                             res.send('error: ' + err)
                         });
                 });
-            } else {
-                res.json({ error: 'Användaren finns redan!' });
+            } else if (user.username == userData.username) {
+                res.send({ error: 'Användarnamnet upptaget!' });
+            } else if (user.email == userData.email) {
+                res.send({ error: 'Emailadressen upptagen!' });
             }
         })
         .catch(err => {
             res.send('error: ' + err)
         });
-})
+});
 
 // Loggar in
 users.post('/login', async (req, res) => {
@@ -77,12 +81,10 @@ users.post('/login', async (req, res) => {
                     })
                     res.send(token)
                 } else {
-                    //res.json({ error: 'Användaren finns inte' })
-                    res.status(404).send({ error: 'Användaren finns inte' });
+                    res.send({ error: 'Användaren finns inte' });
                 }
             } else {
-                //res.json({ error: 'Användaren finns inte' })
-                res.status(404).send({ error: 'Användaren finns inte' });
+                res.send({ error: 'Användaren finns inte' });
             }
         })
         .catch(err => {

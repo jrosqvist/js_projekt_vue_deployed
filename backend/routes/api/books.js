@@ -38,15 +38,16 @@ router.get('/user/', async (req, res) => {
     const books = await loadBooksCollection();
     books.find({ user: getUser }, async (err) => {
         if (err) {
-           res.send(err);
-           console.log(err);
+            res.send(err);
+            console.log(err);
+            return;
         } else {
             res.send(await books.find({ "user": getUser }).toArray());
         }
     });
 })
 
-
+/*
 // Hämtar en bok
 router.get('/:id', async (req, res) => {
     // Plockar fram id:t och sparar i variabel
@@ -62,6 +63,7 @@ router.get('/:id', async (req, res) => {
         }
     });
 })
+*/
 
 // Lägg till böcker
 router.post("/", async (req, res) => {
